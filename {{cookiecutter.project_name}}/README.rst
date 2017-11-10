@@ -16,6 +16,10 @@
         :target: https://travis-ci.org/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}
         :alt: Travis CI
 
+.. image:: https://ci.appveyor.com/api/projects/status/github/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}?svg=true&branch=master
+        :target: https://ci.appveyor.com/project/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}
+        :alt: AppVeyor
+
 .. image:: https://readthedocs.org/projects/{{ cookiecutter.project_name | replace("_", "-") }}/badge/?version=latest
         :target: https://{{ cookiecutter.project_name | replace("_", "-") }}.readthedocs.io/en/latest/?badge=latest
         :alt: Read the Docs
