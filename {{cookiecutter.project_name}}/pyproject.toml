@@ -3,4 +3,7 @@ requires = [
     "wheel",
     "setuptools",
     "Cython",
+    {% if cookiecutter.require_numpy == 'y' -%}
+    "numpy",
+    {%- endif %}
 ]

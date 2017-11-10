@@ -37,9 +37,15 @@ with open("HISTORY.rst") as history_file:
 
 setup_requirements = [
     "cython>=0.25.2",
+    {% if cookiecutter.require_numpy == 'y' -%}
+    "numpy>=1.11.3",
+    {%- endif %}
 ]
 
 install_requirements = [
+    {% if cookiecutter.require_numpy == 'y' -%}
+    "numpy>=1.11.3",
+    {%- endif %}
     # TODO: put package install requirements here
 ]
 
