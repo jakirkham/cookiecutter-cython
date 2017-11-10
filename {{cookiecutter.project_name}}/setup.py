@@ -32,11 +32,15 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = [
+setup_requirements = [
+    # TODO: put package build requirements here
+]
+
+install_requirements = [
     {%- if cookiecutter.command_line_interface|lower == "click" %}
     "Click>=6.0",
     {%- endif %}
-    # TODO: put package requirements here
+    # TODO: put package install requirements here
 ]
 
 test_requirements = [
@@ -56,6 +60,9 @@ cmdclasses.update(versioneer.get_cmdclass())
     "GNU General Public License v3": "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
 } %}
 
+if not ({"build", "install"}.intersection(sys.argv) or
+    any([v.startswith("bdist") for v in sys.argv])):
+    setup_requirements = []
 
 setup(
     name="{{ cookiecutter.project_name }}",
@@ -71,7 +78,8 @@ setup(
     cmdclass=cmdclasses,
     packages=setuptools.find_packages(exclude=["tests*"]),
     include_package_data=True,
-    install_requires=requirements,
+    setup_requires=setup_requirements,
+    install_requires=install_requirements,
 {%- if cookiecutter.open_source_license in license_classifiers %}
     license="{{ cookiecutter.open_source_license }}",
 {%- endif %}
