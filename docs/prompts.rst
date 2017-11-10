@@ -45,3 +45,6 @@ The following package configuration options set up different features for your p
 
 use_pypi_deployment_with_travis
     Whether to use PyPI deployment with Travis.
+
+require_numpy
+    Whether to make NumPy a requirement of the package build and install.
