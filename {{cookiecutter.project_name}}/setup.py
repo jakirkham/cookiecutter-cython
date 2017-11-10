@@ -100,6 +100,18 @@ cython_directives = {}
 cython_line_directives = {}
 
 
+if "test" in sys.argv:
+    cython_directives["binding"] = True
+    cython_directives["embedsignature"] = True
+    cython_directives["profile"] = True
+    cython_directives["linetrace"] = True
+    define_macros += [
+        ("CYTHON_PROFILE", 1),
+        ("CYTHON_TRACE", 1),
+        ("CYTHON_TRACE_NOGIL", 1),
+    ]
+
+
 ext_modules = [
     Extension(
         "{{cookiecutter.project_import}}",
