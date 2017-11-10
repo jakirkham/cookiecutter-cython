@@ -40,9 +40,6 @@ setup_requirements = [
 ]
 
 install_requirements = [
-    {%- if cookiecutter.command_line_interface|lower == "click" %}
-    "Click>=6.0",
-    {%- endif %}
     # TODO: put package install requirements here
 ]
 
@@ -136,9 +133,6 @@ setup(
     author="{{ cookiecutter.full_name.replace('\"', '\\\"') }}",
     author_email="{{ cookiecutter.email }}",
     url="https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}",
-    {%- if 'no' not in cookiecutter.command_line_interface|lower %}
-    scripts=glob.glob("bin/*"),
-    {%- endif %}
     cmdclass=cmdclasses,
     packages=setuptools.find_packages(exclude=["tests*"]),
     include_package_data=True,
