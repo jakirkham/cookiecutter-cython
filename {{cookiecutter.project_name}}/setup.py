@@ -75,6 +75,13 @@ else:
         ])
 
 
+try:
+    i = sys.argv.index("test")
+    sys.argv = sys.argv[:i] + ["build_ext", "--inplace"] + sys.argv[i:]
+except ValueError:
+    pass
+
+
 include_dirs = [
     os.path.dirname(get_python_inc()),
     get_python_inc()
