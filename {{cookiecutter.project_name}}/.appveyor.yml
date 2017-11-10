@@ -84,9 +84,6 @@ install:
 build: off
 
 test_script:
-    # Install the package and dependencies.
-    - cmd: pip install -e .
-
     # command to run tests, e.g. python setup.py test
     - cmd: coverage erase
     - cmd: coverage run --append --source . setup.py --version
