@@ -27,6 +27,8 @@ class PyTest(TestCommand):
         sys.exit(pytest.main(self.test_args))
 
 
+version = versioneer.get_version()
+
 with open("README.rst") as readme_file:
     readme = readme_file.read()
 
@@ -66,6 +68,11 @@ if not (({"develop", "test"} & set(sys.argv)) or
     any([v.startswith("bdist") for v in sys.argv]) or
     any([v.startswith("install") for v in sys.argv])):
     setup_requirements = []
+else:
+    with open("src/version.pxi", "w") as f:
+        f.writelines([
+            "__version__ = " + "\"" + str(version) + "\""
+        ])
 
 
 include_dirs = [
@@ -105,7 +112,7 @@ for em in ext_modules:
 
 setup(
     name="{{ cookiecutter.project_name }}",
-    version=versioneer.get_version(),
+    version=version,
     description="{{ cookiecutter.project_short_description }}",
     long_description=readme + "\n\n" + history,
     author="{{ cookiecutter.full_name.replace('\"', '\\\"') }}",
