@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-{% if 'no' not in cookiecutter.command_line_interface|lower -%}
 import glob
-
-{% endif -%}
+import os
 import sys
 
 import setuptools
-from setuptools import setup
+from setuptools import setup, Extension
 from setuptools.command.test import test as TestCommand
+
+from distutils.sysconfig import get_config_var, get_python_inc
 
 import versioneer
 
@@ -67,6 +67,23 @@ if not (({"develop", "test"} & set(sys.argv)) or
     any([v.startswith("install") for v in sys.argv])):
     setup_requirements = []
 
+
+include_dirs = [
+    os.path.dirname(get_python_inc()),
+    get_python_inc()
+]
+library_dirs = list(filter(
+    lambda v: v is not None,
+    [get_config_var("LIBDIR")]
+))
+
+headers = []
+sources = glob.glob("src/*.pxd") + glob.glob("src/*.pyx")
+libraries = []
+define_macros = []
+extra_compile_args = []
+
+
 setup(
     name="{{ cookiecutter.project_name }}",
     version=versioneer.get_version(),
@@ -83,6 +100,19 @@ setup(
     include_package_data=True,
     setup_requires=setup_requirements,
     install_requires=install_requirements,
+    headers=headers,
+    ext_modules=[
+        Extension(
+            "{{cookiecutter.project_import}}",
+            sources=sources,
+            include_dirs=include_dirs,
+            library_dirs=library_dirs,
+            libraries=libraries,
+            define_macros=define_macros,
+            extra_compile_args=extra_compile_args,
+            language="c"
+        )
+    ],
 {%- if cookiecutter.open_source_license in license_classifiers %}
     license="{{ cookiecutter.open_source_license }}",
 {%- endif %}
