@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = {{cookiecutter.project_import}}
+plugins = Cython.Coverage
 [report]
 exclude_lines =
     # Include the no cover pragma as it needs to be listed explicitly when

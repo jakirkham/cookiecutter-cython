@@ -7,8 +7,6 @@ import yaml
 import datetime
 from cookiecutter.utils import rmtree
 
-from click.testing import CliRunner
-
 if sys.version_info > (3, 0):
     import importlib
 else:
@@ -82,9 +80,14 @@ def test_bake_with_defaults(cookies):
 
         found_toplevel_files = [f.basename for f in result.project.listdir()]
         assert 'setup.py' in found_toplevel_files
-        assert 'python_boilerplate' in found_toplevel_files
         assert 'tests' in found_toplevel_files
         assert 'travis_pypi_setup.py' in found_toplevel_files
+
+        src = result.project.join("src")
+        assert src.isdir()
+        src_files = [f.basename for f in src.listdir()]
+        assert 'python_boilerplate.pxd' in src_files
+        assert 'python_boilerplate.pyx' in src_files
 
 
 def test_bake_and_run_tests(cookies):
@@ -207,54 +210,3 @@ def test_project_with_hyphen_in_module_name(cookies):
     result_travis_config = yaml.load(open(os.path.join(project_path, ".travis.yml")))
     assert "secure" in result_travis_config["deploy"]["password"],\
         "missing password config in .travis.yml"
-
-
-def test_bake_with_no_console_script(cookies):
-    context = {'command_line_interface': "No command-line interface"}
-    result = cookies.bake(extra_context=context)
-    project_path, project_import, project_dir = project_info(result)
-    found_project_files = os.listdir(project_dir)
-    assert "cli.py" not in found_project_files
-    assert not result.project.join('bin').exists()
-
-    setup_path = os.path.join(project_path, 'setup.py')
-    with open(setup_path, 'r') as setup_file:
-        assert 'scripts' not in setup_file.read()
-
-
-def test_bake_with_console_script_files(cookies):
-    context = {'command_line_interface': 'click'}
-    result = cookies.bake(extra_context=context)
-    project_path, project_import, project_dir = project_info(result)
-    found_project_files = os.listdir(project_dir)
-    assert "cli.py" in found_project_files
-    assert result.project.join('bin').exists()
-
-    setup_path = os.path.join(project_path, 'setup.py')
-    with open(setup_path, 'r') as setup_file:
-        assert 'scripts' in setup_file.read()
-
-
-def test_bake_with_console_script_cli(cookies):
-    context = {'command_line_interface': 'click'}
-    result = cookies.bake(extra_context=context)
-    project_path, project_import, project_dir = project_info(result)
-    module_path = os.path.join(project_dir, 'cli.py')
-    module_name = '.'.join([project_import, 'cli'])
-    if sys.version_info >= (3, 5):
-        spec = importlib.util.spec_from_file_location(module_name, module_path)
-        cli = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(cli)
-    elif sys.version_info >= (3, 3):
-        file_loader = importlib.machinery.SourceFileLoader
-        cli = file_loader(module_name, module_path).load_module()
-    else:
-        cli = imp.load_source(module_name, module_path)
-    runner = CliRunner()
-    noarg_result = runner.invoke(cli.main)
-    assert noarg_result.exit_code == 0
-    noarg_output = ' '.join(['Replace this message by putting your code into', project_import])
-    assert noarg_output in noarg_result.output
-    help_result = runner.invoke(cli.main, ['--help'])
-    assert help_result.exit_code == 0
-    assert 'Show this message' in help_result.output
