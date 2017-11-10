@@ -8,3 +8,4 @@ dependencies:
   - wheel==0.29.0
   - coverage==4.4.2
   - pytest==3.0.5
+  - cython==0.25.2
