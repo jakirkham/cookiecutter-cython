@@ -50,10 +50,9 @@ test_requirements = [
     "pytest",
 ]
 
-cmdclasses = {
-    "test": PyTest,
-}
+cmdclasses = dict()
 cmdclasses.update(versioneer.get_cmdclass())
+cmdclasses["test"] = PyTest
 
 {%- set license_classifiers = {
     "MIT license": "License :: OSI Approved :: MIT License",
