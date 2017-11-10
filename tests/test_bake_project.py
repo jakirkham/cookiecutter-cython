@@ -80,9 +80,14 @@ def test_bake_with_defaults(cookies):
 
         found_toplevel_files = [f.basename for f in result.project.listdir()]
         assert 'setup.py' in found_toplevel_files
-        assert 'python_boilerplate' in found_toplevel_files
         assert 'tests' in found_toplevel_files
         assert 'travis_pypi_setup.py' in found_toplevel_files
+
+        src = result.project.join("src")
+        assert src.isdir()
+        src_files = [f.basename for f in src.listdir()]
+        assert 'python_boilerplate.pxd' in src_files
+        assert 'python_boilerplate.pyx' in src_files
 
 
 def test_bake_and_run_tests(cookies):
