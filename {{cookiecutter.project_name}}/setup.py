@@ -7,11 +7,25 @@ import sys
 
 import setuptools
 from setuptools import setup, Extension
+{% if cookiecutter.require_numpy == 'y' -%}
+from setuptools.command.build_ext import build_ext as BuildExtCommand
+{%- endif %}
 from setuptools.command.test import test as TestCommand
 
 from distutils.sysconfig import get_config_var, get_python_inc
 
 import versioneer
+
+
+{% if cookiecutter.require_numpy == 'y' -%}
+class NumPyBuildExt(BuildExtCommand):
+    def finalize_options(self):
+        BuildExtCommand.finalize_options(self)
+        # Prevent numpy from thinking it is still in its setup process:
+        __builtins__.__NUMPY_SETUP__ = False
+        import numpy
+        self.include_dirs.append(numpy.get_include())
+{%- endif %}
 
 
 class PyTest(TestCommand):
@@ -55,6 +69,9 @@ test_requirements = [
 
 cmdclasses = dict()
 cmdclasses.update(versioneer.get_cmdclass())
+{% if cookiecutter.require_numpy == 'y' -%}
+cmdclasses["build_ext"] = NumPyBuildExt
+{%- endif %}
 cmdclasses["test"] = PyTest
 
 {%- set license_classifiers = {
